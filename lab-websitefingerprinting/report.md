@@ -4,11 +4,11 @@
 
 **Report your browser version, CPU type, cache size, RAM amount, and OS. We use this information to learn about the attack’s behavior on different machines.**
 
-- Browser:
-- CPU:
-- Cache sizes:
-- RAM:
-- OS:
+- Browser: Chrome
+- CPU: AMD Ryzen 5 7535HS
+- Cache sizes: 64 Bytes
+- RAM: 8GB
+- OS: Windows 11
 
 
 
@@ -19,14 +19,14 @@
 
 | Number of Cache Lines | Median Access Latency (ms) |
 | --------------------- | -------------------------- |
-| 1                     |                            |
-| 10                    |                            |
-| 100                   |                            |
-| 1,000                 |                            |
-| 10,000                |                            |
-| 100,000               |                            |
-| 1,000,000             |                            |
-| 10,000,000            |                            |
+| 1                     |             0              |
+| 10                    |             0              |
+| 100                   |             0              |
+| 1,000                 |             0              |
+| 10,000                |            0.1             |
+| 100,000               |            0.25            |
+| 1,000,000             |            N/A             |
+| 10,000,000            |            N/A             |
 
 
 
@@ -35,14 +35,15 @@
 
 **According to your measurement results, what is the resolution of your `performance.now()`? In order to measure differences in time with `performance.now()``, approximately how many cache accesses need to be performed?**
 
-
+The resolution of my 'performance.now()' is approximately 0.1ms. To measure differences in time, approximately 100,000 cache accesses will need to be performed.
 
 
 ## 2-2
 
 **Report important parameters used in your attack. For each sweep operation, you access N addresses, and you count the number of sweep operations within a time interval P ms. What values of N and P do you use? How do you choose N? Why do not you choose P to be larger or smaller?**
 
-
+Our Values:
+N = 2
 
 
 ## 2-3

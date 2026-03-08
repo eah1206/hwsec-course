@@ -20,9 +20,27 @@ function measureOneLine() {
 
 function measureNLines() {
   let result = [];
+  const LINE_SIZE = 64;
+
+  const N = 1000000;
+
+  // Fill with -1 to ensure allocation
+  const M = new Array (runs * N * LINE_SIZE).fill(-1);
 
   // TODO: Exercise 1-1
-
+  // Perform 10 runs of accessing N cache lines
+  for (let i=0; i < runs; i++) {
+    const start = performance.now();
+    // Measure the time taken to access all N cache lines in each run
+    for (let j=0; j < N; j++) {
+      let val = M[runs*j*LINE_SIZE];
+    }
+    const end = performance.now();
+    result.push(end - start);
+  }
+  const sorted = result.toSorted();
+  let median = (sorted[4]+sorted[5])/2;
+  console.log(median)
   return result;
 }
 

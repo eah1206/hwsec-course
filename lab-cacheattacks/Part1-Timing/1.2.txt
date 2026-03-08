@@ -1,0 +1,4 @@
+   |Cache Line Size |  Total Size | Number of Ways (Associativity) | Number of Sets | Raw Latency
+L1 |    64 Bytes    |             |                                |                |
+L2 |                |             |                                |                |
+L3 |                |             |                                |                |

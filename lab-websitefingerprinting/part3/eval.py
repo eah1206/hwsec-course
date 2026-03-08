@@ -12,9 +12,15 @@ def eval():
     for i in range(10):
         ### TODO: Exercise 2-5
         ### 1. Load data from traces file
+        with open("traces.out", "r") as f:
+            data = json.loads(f.read())
+            traces = np.array(data["traces"])
         ### 2. Split data into X_train, X_test, y_train, y_test with train_test_split
+        X_train, X_test, y_train, y_test = train_test_split(traces, test_size=0.2)
         ### 3. Train classifier with X_train and y_train
+        classifier = RandomForestClassifier(100).fit(X=X_train, y=y_train)
         ### 4. Use classifier to make predictions on X_test. Save the result to a variable called y_pred
+        y_pred = classifier.predict(X_test)
 
         # Do not modify the next two lines
         y_test_full.extend(y_test)
@@ -22,6 +28,7 @@ def eval():
 
     ### TODO: Exercise 2-5 (continued)
     ### 5. Print classification report using y_test_full and y_pred_full
+    print(classification_report(y_test_full, y_pred_full))
 
 if __name__ == "__main__":
     eval()
