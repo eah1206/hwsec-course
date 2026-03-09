@@ -47,7 +47,7 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++) {
-        clflush(*target_buffer);
+        clflush((void *)target_buffer);
         dram_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
     }
 
@@ -55,7 +55,7 @@ int main (int ac, char **av) {
     // [1.2] TODO: Measure L2 Latency, store results in l2_latency array
     // ======
     //
-    
+
 
 
     // ======
