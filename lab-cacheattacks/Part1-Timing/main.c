@@ -31,7 +31,7 @@ int main (int ac, char **av) {
 
     // [1.2] TODO: Uncomment the following line to allocate a buffer of a size
     // of your chosing. This will help you measure the latencies at L2 and L3.
-    uint64_t *eviction_buffer = (uint64_t)malloc(TODO);
+    uint64_t *eviction_buffer = (uint64_t)malloc(L1_SIZE+ L2_SIZE);
 
     // Example: Measure L1 access latency, store results in l1_latency array
     for (int i=0; i<SAMPLES; i++){
@@ -46,11 +46,17 @@ int main (int ac, char **av) {
     // [1.2] TODO: Measure DRAM Latency, store results in dram_latency array
     // ======
     //
+    for (int i=0; i<SAMPLES; i++) {
+        clflush(*target_buffer);
+        dram_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
+    }
 
     // ======
     // [1.2] TODO: Measure L2 Latency, store results in l2_latency array
     // ======
     //
+    
+
 
     // ======
     // [1.2] TODO: Measure L3 Latency, store results in l3_latency array
@@ -66,7 +72,7 @@ int main (int ac, char **av) {
     free(target_buffer);
 
     // [1.2] TODO: Uncomment this line once you uncomment the eviction_buffer creation line
-    //free(eviction_buffer);
+    free(eviction_buffer);
     return 0;
 }
 

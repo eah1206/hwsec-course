@@ -1,0 +1,2 @@
+Cache lines needed to fill up L2 cache:
+Cache lines needed to fill up L3 cache:
