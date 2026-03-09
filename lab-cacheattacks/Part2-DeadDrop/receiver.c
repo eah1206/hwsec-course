@@ -3,7 +3,7 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 #define BUFF_SIZE 1048576
-#define THRESHOLD 250  // Median latency based on Part 1
+#define THRESHOLD 140  // Median latency based on Part 1
 
 
 int main(int argc, char **argv)
@@ -50,9 +50,7 @@ int main(int argc, char **argv)
 
 		// Prime the sets
 		for (int set = 0; set < 256; set++) {
-			for (int way = 0; way < 16; way++) {
-				*((char*)sets[set]) = 1;
-			}
+			*((char*)sets[set]) = 1;
 		}
 
 		for (int i = 0; i < 256; i++) {
@@ -75,6 +73,7 @@ int main(int argc, char **argv)
 				listening = false;
 			}
 		}
+		printf("DEBUG: slowest_idx=%d, largest_latency=%u\n", slowest_idx, largest_latency);
 			
 	}
 	printf("Receiver finished.\n");
