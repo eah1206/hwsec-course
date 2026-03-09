@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 		}
 		printf("%d\n", slowest_idx);
 		listening = false;
-
+	}
 	printf("Receiver finished.\n");
 
 	return 0;
