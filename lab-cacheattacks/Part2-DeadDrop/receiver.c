@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 				consecutive_hits = 1;
 				last_idx = slowest_idx;
 			}
-			if (consecutive_hits > 3) {
+			if (consecutive_hits > 5) {
 				printf("%d\n", slowest_idx);
 				listening = false;
 			}
