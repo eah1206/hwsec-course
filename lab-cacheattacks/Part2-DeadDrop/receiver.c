@@ -49,7 +49,6 @@ int main(int argc, char **argv)
 				slowest_idx = i;
 			}
 		}
-		printf("heard %d (time %u)\n", slowest_idx, largest_latency);
 	}
 
 	printf("Receiver finished.\n");

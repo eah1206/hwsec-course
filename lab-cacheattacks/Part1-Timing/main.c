@@ -58,6 +58,10 @@ int main (int ac, char **av) {
     for (int i=0; i<SAMPLES; i++){
         // Step 1: bring the target cache line into L1 by simply accessing the line
         tmp = target_buffer[0];
+        
+        for (int i = 0; i < L1_SIZE; i+=64) {
+            eviction_buffer[i]++;
+        }
 
         // Step 2: measure the access latency
         l2_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
@@ -68,6 +72,17 @@ int main (int ac, char **av) {
     // [1.2] TODO: Measure L3 Latency, store results in l3_latency array
     // ======
     //
+    for (int i=0; i<SAMPLES; i++){
+        // Step 1: bring the target cache line into L1 by simply accessing the line
+        tmp = target_buffer[0];
+        
+        for (int i = 0; i < L2_SIZE; i+=64) {
+            eviction_buffer[i]++;
+        }
+
+        // Step 2: measure the access latency
+        l3_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
+    }
 
 
     // Print the results to the screen
