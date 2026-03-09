@@ -3,7 +3,7 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 #define BUFF_SIZE 1048576
-#define THRESHOLD 124  // Median latency based on Part 1
+#define THRESHOLD 130  // Median latency based on Part 1
 
 
 int main(int argc, char **argv)
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 				consecutive_hits = 1;
 				last_idx = slowest_idx;
 			}
-			if (consecutive_hits > 2) {
+			if (consecutive_hits > 3) {
 				printf("%d\n", slowest_idx);
 				listening = false;
 			}
