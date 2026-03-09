@@ -3,6 +3,7 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 #define BUFF_SIZE 1048576
+#define THRESHOLD 50  // Adjust this threshold based on your system's cache miss latency
 
 
 int main(int argc, char **argv)
@@ -49,8 +50,10 @@ int main(int argc, char **argv)
 				slowest_idx = i;
 			}
 		}
-		printf("%d\n", slowest_idx);
-		listening = false;
+		if (largest_latency > THRESHOLD) {
+			printf("%d\n", slowest_idx);
+			listening = false;
+		}
 	}
 	printf("Receiver finished.\n");
 
