@@ -26,8 +26,8 @@ int main(int argc, char **argv)
 
   // TODO:
   // Put your covert channel setup code here
-  void *sets[8];
-  for (int i = 0; i < 8; i++) {
+  void *sets[256];
+  for (int i = 0; i < 256; i++) {
     sets[i] = (char*) buf + (i*4096);
   }
 
@@ -41,13 +41,9 @@ int main(int argc, char **argv)
       // TODO:
       // Put your covert channel code here
       int value = string_to_int(text_buf);
-      for (int i = 0; i < 8; i++) {
-          if (value & (1 << i)) {
-              for (int j = 0; j < 1500; j++) {
-                  *((char*)sets[i]) = 1;
-              }
-          }
-      }
+      /* prime the set corresponding to value */
+      for (int i = 0; i < 1500; i++)      // repeat to make it visible
+          *((char*)sets[value]) = 1;
   }
 
   printf("Sender finished.\n");
