@@ -28,8 +28,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < 256; i++) {
 		sets[i] = (char*) buf + (i*4096);
 	}
-	uint32_t largest_latency = 0;
-	int slowest_idx = 0;
+	int last_idx = -1;
 	int consecutive_hits = 0;
 
 	printf("Please press enter.\n");
@@ -44,24 +43,30 @@ int main(int argc, char **argv)
 		
 
 		// Put your covert channel code here
-		
+		uint32_t largest_latency = 0;
+		int slowest_idx = 0;
+
 		for (int i = 0; i < 256; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
 			if (latency > largest_latency) {
 				largest_latency = latency;
-				if (slowest_idx == i) { // If the same spot has a noticeably large latency upon access
-					consecutive_hits += 1;
-				}
-				else {
-					slowest_idx = i;
-					consecutive_hits = 1;
-				}
+				slowest_idx = i;
 			}
 		}
-		if (largest_latency > THRESHOLD && consecutive_hits > 2) {
-			printf("%d\n", slowest_idx);
-			listening = false;
+		if (largest_latency > THRESHOLD) {
+			if (slowest_idx == last_idx) { // The same cache set has the most latency
+				consecutive_hits++;
+			}
+			else {
+				consecutive_hits = 1;
+				last_idx = slowest_idx;
+			}
+			if (consecutive_hits > 2) {
+				printf("%d\n", slowest_idx);
+				listening = false;
+			}
 		}
+			
 	}
 	printf("Receiver finished.\n");
 
