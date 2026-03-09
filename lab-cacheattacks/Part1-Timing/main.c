@@ -31,7 +31,7 @@ int main (int ac, char **av) {
 
     // [1.2] TODO: Uncomment the following line to allocate a buffer of a size
     // of your chosing. This will help you measure the latencies at L2 and L3.
-    uint64_t *eviction_buffer = (uint64_t)malloc((L2_SIZE * 3)/2);
+    uint64_t *eviction_buffer = (uint64_t *)malloc(L3_SIZE *2);
 
     // Example: Measure L1 access latency, store results in l1_latency array
     for (int i=0; i<SAMPLES; i++){
@@ -59,8 +59,8 @@ int main (int ac, char **av) {
         // Step 1: bring the target cache line into L1 by simply accessing the line
         tmp = target_buffer[0];
         
-        for (int i = 0; i < L1_SIZE; i+=64) {
-            eviction_buffer[i]++;
+        for (int j = 0; j < L1_SIZE; j+=64) {
+            eviction_buffer[j]++;
         }
 
         // Step 2: measure the access latency
@@ -76,8 +76,8 @@ int main (int ac, char **av) {
         // Step 1: bring the target cache line into L1 by simply accessing the line
         tmp = target_buffer[0];
         
-        for (int i = 0; i < L2_SIZE; i+=64) {
-            eviction_buffer[i]++;
+        for (int j = 0; j < L2_SIZE; j+=64) {
+            eviction_buffer[j]++;
         }
 
         // Step 2: measure the access latency
