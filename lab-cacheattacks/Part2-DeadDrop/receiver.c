@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 		for (int set = 0; set < 256; set++) {
 			*((char*)sets[set]) = 1;
 		}
-
+		usleep(100);
 		for (int i = 0; i < 256; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
 			if (latency > largest_latency) {
