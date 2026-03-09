@@ -4,8 +4,8 @@
 #include <sys/mman.h>
 
 // TODO: define your own buffer size
-//#define BUFF_SIZE (1<<21)
-#define BUFF_SIZE [1048576]
+#define BUFF_SIZE (1<<21)
+//#define BUFF_SIZE [1048576]
 
 int main(int argc, char **argv)
 {
