@@ -24,11 +24,11 @@ int main(int argc, char **argv)
 	*((char *)buf) = 1; // dummy write to trigger page allocation
 
 
-	void *sets[256]; // 256 cache sets we'll check
-	for (int i = 0; i < 256; i++) {
+	void *sets[8]; // 8 cache sets for 8 bits
+	for (int i = 0; i < 8; i++) {
 		sets[i] = (char*) buf + (i*4096);
 	}
-	int last_idx = -1;
+	int last_value = -1;
 	int consecutive_hits = 0;
 
 	printf("Please press enter.\n");
@@ -43,30 +43,27 @@ int main(int argc, char **argv)
 		
 
 		// Put your covert channel code here
-		uint32_t largest_latency = 0;
-		int slowest_idx = 0;
-
-		for (int i = 0; i < 256; i++) {
+		int bits[8] = {0};
+		for (int i = 0; i < 8; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
-			if (latency > largest_latency) {
-				largest_latency = latency;
-				slowest_idx = i;
+			if (latency > THRESHOLD) {
+				bits[i] = 1;
 			}
 		}
-		if (largest_latency > THRESHOLD) {
-			if (slowest_idx == last_idx) { // The same cache set has the most latency
-				consecutive_hits++;
-			}
-			else {
-				consecutive_hits = 1;
-				last_idx = slowest_idx;
-			}
-			if (consecutive_hits > 2) {
-				printf("%d\n", slowest_idx);
-				listening = false;
-			}
+		int value = 0;
+		for (int i = 0; i < 8; i++) {
+			if (bits[i]) value |= (1 << i);
 		}
-			
+		if (value == last_value) {
+			consecutive_hits++;
+		} else {
+			consecutive_hits = 1;
+			last_value = value;
+		}
+		if (consecutive_hits > 2) {
+			printf("%d\n", value);
+			listening = false;
+		}
 	}
 	printf("Receiver finished.\n");
 
