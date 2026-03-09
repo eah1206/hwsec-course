@@ -42,7 +42,7 @@ int main(int argc, char **argv)
       // Put your covert channel code here
       int value = string_to_int(text_buf);
       /* prime the set corresponding to value */
-      for (int i = 0; i < 1000; i++)      /* repeat to make it visible */
+      for (int i = 0; i < 1000; i++)      // repeat to make it visible
           *((char*)sets[value]) = 1;
   }
 
