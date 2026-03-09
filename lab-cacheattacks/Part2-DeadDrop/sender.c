@@ -41,9 +41,9 @@ int main(int argc, char **argv)
       // TODO:
       // Put your covert channel code here
       int value = string_to_int(text_buf);
-      /* prime the set corresponding to value */
-      for (int i = 0; i < 1500; i++)      // repeat to make it visible
-          *((char*)sets[value]) = 1;
+      for (int i = 0; i < 1500; i++) {
+        *((char*)sets[value]) = 1;
+      }
   }
 
   printf("Sender finished.\n");
