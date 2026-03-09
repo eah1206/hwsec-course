@@ -3,7 +3,7 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 #define BUFF_SIZE 1048576
-#define THRESHOLD 50  // Adjust this threshold based on your system's cache miss latency
+#define THRESHOLD 124  // Median latency based on Part 1
 
 
 int main(int argc, char **argv)
