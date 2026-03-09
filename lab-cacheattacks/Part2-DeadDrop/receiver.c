@@ -29,12 +29,7 @@ int main(int argc, char **argv)
 		sets[i] = (char*) buf + (i*4096);
 	}
 
-	// Prime the sets
-	for (int set = 0; set < 256; set++) {
-		for (int way = 0; way < 16; way++) {
-			*((char*)sets[set]) = 1;
-		}
-	}
+	
 
 	int last_idx = -1;
 	int consecutive_hits = 0;
@@ -49,10 +44,16 @@ int main(int argc, char **argv)
 	bool listening = true;
 	while (listening) {
 		
-
 		// Put your covert channel code here
 		uint32_t largest_latency = 0;
 		int slowest_idx = 0;
+
+		// Prime the sets
+		for (int set = 0; set < 256; set++) {
+			for (int way = 0; way < 16; way++) {
+				*((char*)sets[set]) = 1;
+			}
+		}
 
 		for (int i = 0; i < 256; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
