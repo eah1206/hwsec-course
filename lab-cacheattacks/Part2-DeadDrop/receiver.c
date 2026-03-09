@@ -54,20 +54,20 @@ int main(int argc, char **argv)
 		}
 		for (int i = 0; i < 256; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
-			if (latency > largest_latency) {
+			if (latency > largest_latency) { // Find the set with the largest latency
 				largest_latency = latency;
 				slowest_idx = i;
 			}
 		}
-		if (largest_latency > THRESHOLD) {
+		if (largest_latency > THRESHOLD) {// Check if the latency recorded exceeds the defined threshold
 			if (slowest_idx == last_idx) { // The same cache set has the most latency
 				consecutive_hits++;
 			}
-			else {
+			else { // The slowest set is not the previously slowest set
 				consecutive_hits = 1;
 				last_idx = slowest_idx;
 			}
-			if (consecutive_hits > 5) {
+			if (consecutive_hits > 5) { // The slowest set has been the same 5 times
 				printf("%d\n", slowest_idx);
 				listening = false;
 			}
