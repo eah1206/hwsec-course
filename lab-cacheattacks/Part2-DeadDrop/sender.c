@@ -5,7 +5,7 @@
 
 // TODO: define your own buffer size
 #define BUFF_SIZE (1<<21)
-//#define BUFF_SIZE [TODO]
+#define BUFF_SIZE [1048576]
 
 int main(int argc, char **argv)
 {
@@ -21,11 +21,15 @@ int main(int argc, char **argv)
   // page allocation, TLB insertion, etc.
   // Thus, we use a dummy write here to trigger page allocation
   // so later access will not suffer from such overhead.
-  //*((char *)buf) = 1; // dummy write to trigger page allocation
+  *((char *)buf) = 1; // dummy write to trigger page allocation
 
 
   // TODO:
   // Put your covert channel setup code here
+  void *sets[256];
+  for (int i = 0; i < 256; i++) {
+    sets[i] = (char*) buf + (i*4096);
+  }
 
   printf("Please type a message.\n");
 
@@ -36,6 +40,10 @@ int main(int argc, char **argv)
 
       // TODO:
       // Put your covert channel code here
+      int value = string_to_int(text_buf);
+      /* prime the set corresponding to value */
+      for (int i = 0; i < 1000; i++)      /* repeat to make it visible */
+          *((char*)sets[value]) = 1;
   }
 
   printf("Sender finished.\n");
