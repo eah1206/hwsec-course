@@ -6,6 +6,7 @@ int main(int argc, char const *argv[]) {
     int flag = -1;
 
     // Put your capture-the-flag code here
+    
 
     printf("Flag: %d\n", flag);
     return 0;
