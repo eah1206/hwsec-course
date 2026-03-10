@@ -149,6 +149,7 @@ int main(int argc, char **argv)
             printf("%d\n", best_set);
             fflush(stdout);
             locked = true;
+			break;
         }
     }
 
