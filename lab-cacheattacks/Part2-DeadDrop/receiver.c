@@ -33,19 +33,19 @@
 #define STABLE_ROUNDS    2
 
 // Force a memory access (same as in sender)
-static inline void touch_addr(uint8_t *p) {
-    asm ("" ::: "memory");
+static inline void touch_addr(volatile uint8_t *p) {
+    asm volatile("" ::: "memory");
     (void)*p;
 }
 
 // Compute address mapping to a specific L2 cache set
-static  uint8_t *addr_for_set( uint8_t *base, int set_idx, int line_idx) {
+static volatile uint8_t *addr_for_set(volatile uint8_t *base, int set_idx, int line_idx) {
     return base + (size_t)set_idx * CACHE_LINE + (size_t)line_idx * SET_SPAN;
 }
 
 // Prime the cache by accessing all candidate sets.
 // This loads our lines into the cache before probing.
-static void prime_all( uint8_t *base) {
+static void prime_all(volatile uint8_t *base) {
     for (int rep = 0; rep < PRIME_REPS; rep++) {
         for (int set = 0; set < CANDIDATE_SETS; set++) {
             for (int line = 0; line < PROBE_LINES; line++) {
@@ -57,7 +57,7 @@ static void prime_all( uint8_t *base) {
 
 // Measure how slow accesses to a given set are.
 // A higher latency suggests that the sender evicted our lines.
-static int score_set( uint8_t *base, int set_idx) {
+static int score_set(volatile uint8_t *base, int set_idx) {
     int total = 0;
 
     // Access the probe lines and sum the access times
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    uint8_t *base = (volatile uint8_t *)buf;
+    volatile uint8_t *base = (volatile uint8_t *)buf;
 
     // Force physical allocation of the hugepage
     for (size_t off = 0; off < BUFF_SIZE; off += 4096) {
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
         // Only print when the same result appears multiple rounds
         if (!locked && stable_count >= STABLE_ROUNDS) {
             printf("%d\n", best_set);
-            //fflush(stdout);
+            fflush(stdout);
             locked = true;
         }
     }

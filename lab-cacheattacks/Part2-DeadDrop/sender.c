@@ -34,10 +34,10 @@ static inline uint64_t rdtscp64(void) {
     uint32_t lo, hi;
 
     // rdtscp returns the lower 32 bits in eax and upper in edx
-    asm ("rdtscp" : "=a"(lo), "=d"(hi) :: "rcx");
+    asm volatile("rdtscp" : "=a"(lo), "=d"(hi) :: "rcx");
 
     // lfence ensures instructions don't reorder around this point
-    asm ("lfence" ::: "memory");
+    asm volatile("lfence" ::: "memory");
 
     // combine high and low parts into one 64-bit timestamp
     return ((uint64_t)hi << 32) | lo;
@@ -47,14 +47,14 @@ static inline uint64_t rdtscp64(void) {
 // Used to create controlled idle periods.
 static inline void wait_until(uint64_t target) {
     while (rdtscp64() < target) {
-        asm ("pause");   // hint to CPU that we are spinning
+        asm volatile("pause");   // hint to CPU that we are spinning
     }
 }
 
 // Force a memory access to happen.
 // The asm memory barrier prevents the compiler from optimizing it away.
 static inline void touch_addr(volatile uint8_t *p) {
-    asm ("" ::: "memory");
+    asm volatile("" ::: "memory");
     (void)*p;   // read the address to bring the cache line into cache
 }
 
@@ -65,14 +65,14 @@ static inline void touch_addr(volatile uint8_t *p) {
 // way_idx   = which congruent line for that set
 //
 // The formula manipulates address bits so the set index bits stay constant.
-static uint8_t *addr_for_set(uint8_t *base, int set_idx, int way_idx) {
+static volatile uint8_t *addr_for_set(volatile uint8_t *base, int set_idx, int way_idx) {
     return base + (size_t)set_idx * CACHE_LINE + (size_t)way_idx * SET_SPAN;
 }
 
 // Continuously access addresses that map to the chosen cache set.
 // This evicts other cache lines in that set, creating contention
 // detectable by the receiver.
-static void hammer_set(uint8_t *base, int set_idx, uint64_t end_tsc) {
+static void hammer_set(volatile uint8_t *base, int set_idx, uint64_t end_tsc) {
 
     // Continue hammering until we reach the desired timestamp
     while (rdtscp64() < end_tsc) {
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    volatile uint8_t *base = (uint8_t *)buf;
+    volatile uint8_t *base = (volatile uint8_t *)buf;
 
     // Touch one byte per 4KB page so the OS actually allocates
     // the physical memory immediately rather than lazily later.
