@@ -1,4 +1,4 @@
    |Cache Line Size |  Total Size | Number of Ways (Associativity) | Number of Sets | Raw Latency
-L1 |    64 Bytes    |    32768    |              8                 |                |
-L2 |    64 Bytes    |   1048576   |              16                |                |
-L3 |    64 Bytes    |   11534336  |              11                |                |
+L1 |    64 Bytes    |    32768    |              8                 |       64       |   4 Cycles
+L2 |    64 Bytes    |   1048576   |              16                |      1024      |   14 Cycles
+L3 |    64 Bytes    |   11534336  |              11                |      16384     |   40 Cycles

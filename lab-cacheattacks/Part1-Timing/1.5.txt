@@ -1,0 +1,12 @@
+From the histogram generated in Part 1.5, the approximate latency ranges observed were:
+
+L1/L2 ≈ 100–120
+L3    ≈ 120–220
+DRAM  ≈ 260–300
+
+L2/L3 threshold  ≈ 130 cycles
+L3/DRAM threshold ≈ 240 cycles
+
+Access times below ~130 cycles are likely L2 hits, 
+     between ~130–240 cycles are likely L3 hits, 
+     and above ~240 cycles correspond to DRAM accesses.
