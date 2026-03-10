@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         if ((message >> i ) & 1) {
           for (int ways = 0; ways < 16; ways ++) {
             char *addr = (char *)buf + (i * gap) + (ways * 64);
-            addr = 1;
+            *addr = 1;
           }
         }
       }

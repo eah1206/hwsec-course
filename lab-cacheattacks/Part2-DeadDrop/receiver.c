@@ -39,6 +39,8 @@ int main(int argc, char **argv)
 			}
 		}
 
+		for (volatile int d = 0; d < 100000; d++);
+
 		int received_val = 0;
 		for (int i = 0; i < 8; i++) {
 			uint32_t latency = measure_one_block_access_time((ADDR_PTR)buf + (i * 4096));
