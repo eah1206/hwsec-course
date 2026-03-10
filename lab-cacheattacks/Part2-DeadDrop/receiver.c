@@ -147,9 +147,8 @@ int main(int argc, char **argv)
         // Only print when the same result appears multiple rounds
         if (!locked && stable_count >= STABLE_ROUNDS) {
             printf("%d\n", best_set);
-            fflush(stdout);
+            //fflush(stdout);
             locked = true;
-			break;
         }
     }
 
