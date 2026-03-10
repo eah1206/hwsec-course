@@ -3,12 +3,12 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 #define BUFF_SIZE 1048576
-#define THRESHOLD 250  // Median latency of L2 cache based on Part 1
 
 
 int main(int argc, char **argv)
 {
 	// Put your covert channel setup code here
+
 	// Allocate a buffer using huge page
 	// See the handout for details about hugepage management
 	void *buf= mmap(NULL, BUFF_SIZE, PROT_READ | PROT_WRITE, MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1, 0);
@@ -23,17 +23,6 @@ int main(int argc, char **argv)
 	// so later access will not suffer from such overhead.
 	*((char *)buf) = 1; // dummy write to trigger page allocation
 
-
-	void *sets[256]; // 256 cache sets we'll check
-	for (int i = 0; i < 256; i++) {
-		sets[i] = (char*) buf + (i*4096);
-	}
-
-	
-
-	int last_idx = -1;
-	int consecutive_hits = 0;
-
 	printf("Please press enter.\n");
 
 	char text_buf[2];
@@ -43,41 +32,28 @@ int main(int argc, char **argv)
 
 	bool listening = true;
 	while (listening) {
-		
 		// Put your covert channel code here
-		uint32_t largest_latency = 0;
-		int slowest_idx = 0;
+		for (int i = 0; i < 8; i++) {
+			for (int ways = 0; ways < 16; ways ++) {
+				*((char *)buf + (i * 4096) + (ways * 64)) = 1;
+			}
+		}
 
-		// Prime the sets
-		for (int set = 0; set < 256; set++) {
-			*((char*)sets[set]) = 1;
-		}
-		for (int i = 0; i < 256; i++) {
-			uint32_t latency = measure_one_block_access_time((ADDR_PTR) sets[i]);
-			if (latency > largest_latency) { // Find the set with the largest latency
-				largest_latency = latency;
-				slowest_idx = i;
+		int received_val = 0;
+		for (int i = 0; i < 8; i++) {
+			uint32_t latency = measure_one_block_access_time((ADDR_PTR)buf + (i * 4096));
+
+			if (latency > 150) {
+				received_val |= (1 << i);
 			}
 		}
-		if (largest_latency > THRESHOLD) {// Check if the latency recorded exceeds the defined threshold
-			if (slowest_idx == last_idx) { // The same cache set has the most latency
-				consecutive_hits++;
-			}
-			else { // The slowest set is not the previously slowest set
-				consecutive_hits = 1;
-				last_idx = slowest_idx;
-			}
-			if (consecutive_hits > 5) { // The slowest set has been the same 5 times
-				printf("%d is the number.\n", slowest_idx);
-				listening = false;
-			}
+
+		if (received_val > 0) {
+			printf("%d\n", received_val);
 		}
-		printf("DEBUG: slowest_idx=%d, largest_latency=%u\n", slowest_idx, largest_latency);
-			
+
 	}
 	printf("Receiver finished.\n");
 
 	return 0;
 }
-
-

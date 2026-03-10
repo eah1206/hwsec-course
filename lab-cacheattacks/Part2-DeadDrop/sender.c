@@ -26,10 +26,8 @@ int main(int argc, char **argv)
 
   // TODO:
   // Put your covert channel setup code here
-  void *sets[256];
-  for (int i = 0; i < 256; i++) {
-    sets[i] = (char*) buf + (i*4096);
-  }
+  int gap = 4096; // By jumping 4096 bytes in memory, you end up at the same physical address on the same page.
+
 
   printf("Please type a message.\n");
 
@@ -37,14 +35,18 @@ int main(int argc, char **argv)
   while (sending) {
       char text_buf[128];
       fgets(text_buf, sizeof(text_buf), stdin);
+      int message = atoi(text_buf);
 
       // TODO:
       // Put your covert channel code here
-      int value = string_to_int(text_buf);
-      for (int i = 0; i < 1500; i++) {
-        *((char*)sets[value]) = 1;
+      for (int i = 0; i < 8; i++) {
+        if ((message >> i ) & 1) {
+          for (int ways = 0; ways < 16; ways ++) {
+            char *addr = (char *)buf + (i * gap) + (ways * 64);
+            addr = 1;
+          }
+        }
       }
-  }
 
   printf("Sender finished.\n");
   return 0;
