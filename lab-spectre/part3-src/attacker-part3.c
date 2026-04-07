@@ -49,7 +49,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         // leaked_byte = ??
         
         // Create Eviction Buffer to uncache part3_limit
-        char evict_buffer[SHD_SPECTRE_LAB_SHARED_MEMORY_SIZE];
+        char evict_buffer[32*1024*1024];
 
 
 
@@ -63,7 +63,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
             // Evict part3_limit
             char sink = 0;
-            for (int e = 0; e < SHD_SPECTRE_LAB_SHARED_MEMORY_SIZE; e += 64) {
+            for (int e = 0; e < 32*1024*1024; e += 64) {
                 sink += evict_buffer[e];
             }
 
