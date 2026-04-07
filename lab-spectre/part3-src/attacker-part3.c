@@ -11,6 +11,8 @@
 #include "labspectre.h"
 #include "labspectreipc.h"
 
+#define EVICT_SIZE 32*1024*1024
+
 /*
  * call_kernel_part3
  * Performs the COMMAND_PART3 call in the kernel
@@ -40,6 +42,12 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[SHD_SPECTRE_LAB_SECRET_MAX_LEN];
     size_t current_offset = 0;
 
+    // Create Eviction Buffer to uncache part3_limit
+    char *evict_buffer = (char*)malloc(EVICT_SIZE);
+    memset(evict_buffer, 1, EVICT_SIZE);
+
+
+
     printf("Launching attacker\n");
 
     for (current_offset = 0; current_offset < SHD_SPECTRE_LAB_SECRET_MAX_LEN; current_offset++) {
@@ -47,12 +55,6 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         // [Part 3]- Fill this in!
         // leaked_byte = ??
-        
-        // Create Eviction Buffer to uncache part3_limit
-        char evict_buffer[32*1024*1024];
-        memset(evict_buffer, 1, 32*1024*1024);
-
-
 
         uint64_t shortest_access = (uint64_t) -1;
         int best_i = -1;
