@@ -52,7 +52,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         for (int trial = 0; trial < 100; trial++) {
             // Train Branch Predictor
             for (int train = 0; train < 5; train++) {
-                call_kernel_part2(kernel_fd, shared_memory, t % 4);
+                call_kernel_part2(kernel_fd, shared_memory, train % 4);
             }
 
             for (int i = 0; i < 256; i++) {
