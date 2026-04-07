@@ -50,6 +50,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         
         // Create Eviction Buffer to uncache part3_limit
         char evict_buffer[32*1024*1024];
+        memset(evict_buffer, 1, 32*1024*1024)
 
 
 
