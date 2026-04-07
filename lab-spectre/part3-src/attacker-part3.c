@@ -55,7 +55,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         uint64_t shortest_access = (uint64_t) -1;
         int best_i = -1;
-        for (int trial = 0; trial < 150; trial++) {
+        for (int trial = 0; trial < 200; trial++) {
             // Train Branch Predictor
             for (int train = 0; train < 30; train++) {
                 call_kernel_part3(kernel_fd, shared_memory, train % 4);
