@@ -98,6 +98,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
     printf("\n\n[Part 3] We leaked:\n%s\n", leaked_str);
 
+    free(evict_buffer);
     close(kernel_fd);
     return EXIT_SUCCESS;
 }
