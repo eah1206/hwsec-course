@@ -58,7 +58,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         uint64_t shortest_access = (uint64_t) -1;
         int best_i = -1;
-        for (int i = 0l i < 256; i++) {
+        for (int i = 0; i < 256; i++) {
             uint64_t access_time = time_access(&shared_memory[i*SHD_SPECTRE_LAB_PAGE_SIZE]);
             if (access_time < shortest_access) {
                 shortest_access = access_time;
