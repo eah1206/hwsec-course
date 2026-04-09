@@ -1,0 +1,45 @@
+Part 1
+Discussion Question 1: How many addresses need to be flushed at the first step?
+
+ 256 addresses. One per possible byte value, since the victim indexes shared_mem[4096 * secret_byte] and each value lands on its own page.
+
+
+
+Discussion Question 2: Now, assume the attacker and victim no longer share a memory region.
+Would your attack still work? If not, what changes would you need to make to make it work?
+
+No. Flush+Reload requires shared physical cache lines between attacker and victim. Without shared memory, switch to Prime+Probe: fill a cache set with your own data, let the victim run, then time your own lines to see which were evicted, revealing which set the victim touched.
+
+
+Part 2
+Discussion Question 3: In our example, the attacker tries to leak the values in the array
+secret_part2. In a real-world attack, people can use Spectre to leak arbitrary values in the victim’s
+address space. Explain how the attacker can achieve this.
+
+	The offset is added to a base pointer inside the kernel. Since speculation ignores bounds checks,
+    passing a large offset makes the speculative load read from base + offset, which can point at arbitrary kernel memory.
+    Flush+Reload then leaks that byte through the cache.
+    This is the core Spectre v1 threat.
+
+Discussion Question 4: Try to tune the training parameters and answer this question: What is the
+fewest number of times you need to train the branch on line 9 in Listing 3 to make the attack work?
+
+	10 training iterations per attack call gave reliable results (80%+). Fewer caused the branch predictor to mispredict too often.
+
+
+Part 3
+
+Discussion Question 5: Describe your strategy to extend the speculation window of the target
+branch in the victim.
+
+To extend the speculation window, we combined two approaches. Firstly, we trained the branch predictor by calling the victim many times with a valid offset, so the CPU gets used to taking the branch.
+Second, we evicted from cache by writing to a large 32MB buffer before the victim call.
+This forces the CPU to go all the way to DRAM to load the limit variable, giving us a longer window where the CPU is speculatively executing before it figures out the branch shouldn't have been taken.
+This then helps leak the secret. 
+
+
+
+Discussion Question 6: Assume you are an attacker looking to exploit a new machine that has the
+same kernel module installed as the one we attacked in lab 2. What information would you need to
+know about this unknown machine to port your attack to the new system? Could it be possible to
+determine that information experimentally? Briefly describe in 5 sentences or less.
